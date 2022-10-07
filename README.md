@@ -46,24 +46,10 @@ Serverless platform that lets developers create, run, and scale applications wit
 </pre>
 </details>
 <details>
-<summary>Oracle Kubernetes Engine (OKE)</summary>
-<p></p>
-<pre>
-Oracle-managed container orchestration service that can reduce the time and cost to build modern cloud native applications.
-</pre>
-</details>
-<details>
 <summary>Oracle Notifications Service (ONS)</summary>
 <p></p>
 <pre>
 Broadcasts messages to distributed components through a publish-subscribe pattern, delivering secure, highly reliable, low latency and durable messages for applications hosted on Oracle Cloud Infrastructure and externally.
-</pre>
-</details>
-<details>
-<summary>Streaming</summary>
-<p></p>
-<pre>
-Real-time, serverless, Apache Kafka-compatible event streaming platform for developers and data scientists.
 </pre>
 </details>
 <details>
