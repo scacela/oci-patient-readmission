@@ -1,0 +1,601 @@
+# reference for schema.yaml:
+# https://docs.oracle.com/en-us/iaas/Content/ResourceManager/Concepts/terraformconfigresourcemanager_topic-schema.htm#exampleschema
+title: "OCI Patient Readmission"
+description: "Deploy your patient readmission prediction pipeline."
+schemaVersion: 1.1.0
+version: 20190404
+locale: "en"
+
+variableGroups:
+- title: "Authentication"
+  visible: false
+  variables:
+    - tenancy_ocid
+    - user_ocid
+    - fingerprint
+    - private_key_path
+
+# order: a tile for IAM
+- title: "Identity and Access Management (IAM)"
+  variables:
+    - name_for_resources
+    - parent_compartment_id
+    - region
+    - iam_compartment_name
+    - iam_compartment_description
+    - iam_compartment_enable_delete
+    - iam_policy_is_deployed
+    - iam_policy_name
+    - iam_policy_description
+    - iam_dynamic_group_name
+    - iam_dynamic_group_description
+
+# order: a tile for selection of resources
+- title: "Select Resources"
+  variables:
+    - adw_is_deployed
+    # - fnc_is_deployed
+    - oac_is_deployed
+    - object_storage_is_deployed
+    - ods_is_deployed
+    - ons_is_deployed
+    - vcn_is_deployed
+
+# order: a tile for each selected resource
+
+- title: "Autonomous Data Warehouse"
+  variables:
+    - autonomous_database_admin_password
+    - autonomous_database_cpu_core_count
+    - autonomous_database_db_version
+    - autonomous_database_is_auto_scaling_enabled
+    - autonomous_database_data_storage_size_in_tbs
+    - autonomous_database_display_name
+    - autonomous_database_db_name
+    - autonomous_database_db_workload
+    - autonomous_database_license_model
+    - autonomous_database_data_safe_status
+    - autonomous_database_whitelisted_ips
+    - adw_group_is_deployed
+    - adw_group_name
+    - adw_group_description
+    - adw_policy_is_deployed
+    - adw_policy_name
+    - adw_policy_description
+
+- title: "Oracle Analytics Cloud (OAC)"
+  variables:
+    - analytics_instance_idcs_access_token
+    - analytics_instance_capacity_capacity_type
+    - analytics_instance_capacity_capacity_value
+    - analytics_instance_feature_set
+    - analytics_instance_license_type
+    - analytics_instance_name
+    - oac_group_is_deployed
+    - oac_group_name
+    - oac_group_description
+    - oac_policy_is_deployed
+    - oac_policy_name
+    - oac_policy_description
+- title: "Object Storage Bucket"
+  variables:
+    - object_storage_bucket_name
+    - object_storage_bucket_access_type
+    - object_storage_bucket_storage_tier
+    - object_storage_bucket_versioning
+- title: "Oracle Data Science Platform (ODS)"
+  variables:
+    - ods_notebook_session_display_name
+    - ods_notebook_session_shape
+    - ods_notebook_session_ocpu
+    - ods_notebook_session_memory_in_gb
+    - ods_notebook_session_block_storage_size_in_gbs
+    - ods_project_display_name
+- title: "Oracle Notifications Service (ONS)"
+  variables:
+    - ons_topic_name
+    - ons_subscription_endpoint
+    - ons_subscription_protocol
+- title: "Virtual Cloud Network (VCN)"
+  variables:
+    - vcn_cidrs
+    - vcn_display_name
+    - vcn_dns_label
+    - ig_display_name
+    - ng_display_name
+    - sg_display_name
+
+variables:
+  name_for_resources:
+    type: string
+    required: true
+    description: "Provide a string that will be incorporated into the unique name for a new compartment, along with other resources that will be part of this deployment whose names must be unique within the tenancy. For example, you can provide your name or initials."
+    title: "Name Your Resources"
+    visible: true
+    pattern: "^[_\\-a-zA-Z0-9\\.]{1,20}$"
+  # details: a tile for IAM
+  parent_compartment_id:
+    type: oci:identity:compartment:id
+    required: true
+    description: "Compartment where the new compartment containing the stack will be provisioned."
+    title: "Parent Compartment"
+    visible: true
+  region:
+    type: enum
+    enum:
+      - "us-sanjose-1"
+      - "us-phoenix-1"
+      - "us-ashburn-1"
+      - "uk-london-1"
+      - "uk-cardiff-1"
+      - "sa-vinhedo-1"
+      - "sa-saopaulo-1"
+      - "sa-santiago-1"
+      - "mx-queretaro-1"
+      - "me-jeddah-1"
+      - "me-dubai-1"
+      - "me-abudhabi-1"
+      - "il-jerusalem-1"
+      - "eu-zurich-1"
+      - "eu-stockholm-1"
+      - "eu-paris-1"
+      - "eu-milan-1"
+      - "eu-marseille-1"
+      - "eu-madrid-1"
+      - "eu-frankfurt-1"
+      - "eu-amsterdam-1"
+      - "ca-toronto-1"
+      - "ca-montreal-1"
+      - "ap-tokyo-1"
+      - "ap-sydney-1"
+      - "ap-singapore-1"
+      - "ap-seoul-1"
+      - "ap-osaka-1"
+      - "ap-mumbai-1"
+      - "ap-melbourne-1"
+      - "ap-hyderabad-1"
+      - "ap-chuncheon-1"
+      - "af-johannesburg-1"
+       
+    required: true
+    description: "Region where the stack will be provisioned."
+    title: "Region"
+    visible: true
+  iam_compartment_name:
+    type: string
+    required: true
+    description: "(Updatable) The prefix of the name you assign to the compartment during creation. The name must be unique across all compartments in the parent compartment. Avoid entering confidential information."
+    title: "Name of New Compartment (Prefix)"
+    default: "PR_workshop"
+    visible: true
+    pattern: "^[_\\-a-zA-Z0-9\\.]*$"
+  iam_compartment_description:
+    type: string
+    required: true
+    description: "(Updatable) The description you assign to the compartment during creation. Does not have to be unique, and it's changeable."
+    title: "Descripion for New Compartment"
+    default: "Compartment for Anomaly Detection workshop"
+    visible: true
+  iam_compartment_enable_delete:
+    type: boolean
+    required: true
+    description: "If set to false, the provider will implicitly import the compartment if there is a name collision, and will not actually delete the compartment on destroy or removal of the resource declaration. If set to true, the provider will throw an error on a name collision with another compartment, and will attempt to delete the compartment on destroy or removal of the resource declaration."
+    title: "Enable Delete for Compartment"
+    default: true
+    visible: true
+  iam_policy_is_deployed:
+    type: boolean
+    required: true
+    description: "Creates any IAM Policy and Dynamic Group resources that are typically associated with each selected resource."
+    title: "Deploy IAM Policy and Dynamic Group"
+    default: true
+    visible: true
+  iam_policy_name:
+    type: string
+    required: true
+    description: "The prefix of the name you assign to the policy during creation. The name must be unique across all policies in the tenancy and cannot be changed."
+    title: "IAM Policy Name (Prefix)"
+    default: "PR_policy"
+    visible: iam_policy_is_deployed
+    pattern: "^[_\\-a-zA-Z0-9\\.]*$"
+  iam_policy_description:
+    type: string
+    required: true
+    description: "(Updatable) The description you assign to the policy during creation. Does not have to be unique, and it's changeable."
+    title: "IAM Policy Description"
+    default: "Policy for Anomaly Detection workshop"
+    visible: iam_policy_is_deployed
+  iam_dynamic_group_name:
+    type: string
+    required: true
+    description: "The prefix of the name you assign to the dynamic group during creation. The name must be unique across all groups in the tenancy and cannot be changed."
+    title: "IAM Dynamic Group Name (Prefix)"
+    default: "PR_dynamic_group"
+    visible: iam_policy_is_deployed
+    pattern: "^[_\\-a-zA-Z0-9\\.]*$"
+  iam_dynamic_group_description:
+    type: string
+    required: true
+    description: "(Updatable) The description you assign to the dynamic group during creation. Does not have to be unique, and it's changeable."
+    title: "IAM Dynamic Group Description"
+    default: "Dynamic Group for Anomaly Detection workshop"
+    visible: iam_policy_is_deployed
+
+  # details: a tile for selection of resources
+  adw_is_deployed:
+    type: boolean
+    required: true
+    description: "Managed data warehouse service that automates provisioning, configuring, securing, tuning, scaling, and backing up of the data warehouse. It includes tools for self-service data loading, data transformations, business models, automatic insights, and built-in converged database capabilities that enable simpler queries across multiple data types and machine learning analysis."
+    title: "Deploy Autonomous Data Warehouse (ADW)"
+    default: true
+  # fnc_is_deployed:
+  #   type: boolean
+  #   required: true
+  #   description: "Serverless platform that lets developers create, run, and scale applications without managing any infrastructure."
+  #   title: "Deploy OCI Functions"
+  #   default: true
+  oac_is_deployed:
+    type: boolean
+    required: true
+    description: "Provides the capabilities required to address the entire analytics process from data ingestion and modeling, through data preparation and enrichment, to visualization and collaboration without compromising security and governance."
+    title: "Deploy Oracle Analytics Cloud (OAC)"
+    default: true
+  object_storage_is_deployed:
+    type: boolean
+    required: true
+    description: "Securely store any type of data in its native format, with built-in redundancy."
+    title: "Deploy Object Storage Bucket"
+    default: true
+  ods_is_deployed:
+    type: boolean
+    required: true
+    description: "Serverless platform that lets developers create, run, and scale applications without managing any infrastructure."
+    title: "Deploy Oracle Data Science Platform (ODS)"
+    default: true
+  ons_is_deployed:
+    type: boolean
+    required: true
+    description: "highly available, low-latency publish/subscribe (pub/sub) service that sends alerts and messages to Oracle Functions, email, SMS, and message delivery partners, including Slack, PagerDuty, and ServiceNow."
+    title: "Deploy Oracle Notifications Service (ONS)"
+    default: true
+  vcn_is_deployed:
+    type: boolean
+    required: true
+    description: "Customizable and private cloud network."
+    title: "Deploy Virtual Cloud Network"
+    default: true
+
+  autonomous_database_admin_password:
+    type: string
+    required: true
+    description: "(Updatable) The password must be between 12 and 30 characters long, and must contain at least 1 uppercase, 1 lowercase, and 1 numeric character. It cannot contain the double quote symbol (\") or the username \"admin\", regardless of casing."
+    title: "ADW Admin Password"
+    default: "Welcome!2345"
+    pattern: "^(?=.{12,30})(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=])[^\\s\"']*$"
+    sensitive: true
+    visible: adw_is_deployed
+  autonomous_database_cpu_core_count:
+    type: integer
+    required: true
+    description: "(Updatable) The number of OCPU cores to be made available to the ADW instance."
+    title: "ADW Core Count"
+    default: 2
+    minimum: 1
+    maximum: 128
+    visible: adw_is_deployed
+  autonomous_database_db_version:
+    type: string
+    required: true
+    description: "(Updatable) A valid Oracle Database version for Autonomous Database."
+    title: "ADW DB Version"
+    default: "19c"
+    visible: adw_is_deployed
+  autonomous_database_is_auto_scaling_enabled:
+    type: string
+    required: true
+    description: "(Updatable) Indicates if auto scaling is enabled for the Autonomous Database OCPU core count."
+    title: "Enable Auto-Scaling"
+    default: false
+    visible: adw_is_deployed
+  autonomous_database_data_storage_size_in_tbs:
+    type: integer
+    required: true
+    description: "(Updatable) The quantity of data in the database, in terabytes."
+    title: "ADW Storage Size (TB)"
+    default: 1
+    minimum: 1
+    maximum: 32
+    visible: adw_is_deployed
+  autonomous_database_db_workload:
+    type: enum
+    enum:
+      - OLTP
+      - DW
+      - AJD
+      - APEX
+    required: true
+    description: "(Updatable) OLTP (Autonomous Transaction Processing database), DW (Autonomous Data Warehouse database), AJD (Autonomous JSON Database), APEX (Autonomous Database with the Oracle APEX Application Development workload type)"
+    title: "ADW Workload Type"
+    default: DW
+    visible: false
+  autonomous_database_display_name:
+    type: string
+    required: true
+    description: "(Updatable) User-friendly name for your ADW instance."
+    title: "ADW Name"
+    default: "ADW_AD"
+    visible: adw_is_deployed
+  autonomous_database_db_name:
+    type: string
+    required: true
+    description: "The name of the database within your ADW instance. The name must contain only letters and numbers, starting with a letter. 14 characters max. Spaces are not allowed. The database name must be unique in the tenancy."
+    title: "ADW DB Name"
+    default: "adwad"
+    pattern: "^[a-zA-Z][a-zA-Z0-9]{0,13}$"
+    visible: adw_is_deployed
+  autonomous_database_license_model:
+    type: enum
+    enum:
+      - BRING_YOUR_OWN_LICENSE
+      - LICENSE_INCLUDED
+    required: true
+    description: "(Updatable) The Oracle license model that applies to the ADW."
+    title: "ADW License Model"
+    default: LICENSE_INCLUDED
+    visible: adw_is_deployed
+  autonomous_database_data_safe_status:
+    type: enum
+    enum:
+      - REGISTERED
+      - NOT_REGISTERED
+    required: true
+    description: "(Updatable) Status of the Data Safe registration for this ADW instance."
+    title: "ADW Data Safe Status"
+    default: NOT_REGISTERED
+    visible: adw_is_deployed
+  autonomous_database_whitelisted_ips:
+    type: array
+    items:
+      pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+      type: string
+    required: true
+    description: "(Updatable) The client IP access control list (ACL). This feature is available for autonomous databases on shared Exadata infrastructure and on Exadata Cloud@Customer. Only clients connecting from an IP address included in the ACL may access the Autonomous Database instance."
+    title: "ADW Whitelisted IPs"
+    default: ["0.0.0.0/0"]
+    visible: adw_is_deployed
+
+  analytics_instance_idcs_access_token:
+    type: string
+    required: true
+    description: "IDCS access token identifying a stripe and service administrator user. Use an IDCS Application to generate a token file that contains the access token. Supply the access token from the token file by pasting VALUE from {\"app_access_token\":\"VALUE\"}"
+    title: "OAC IDCS Access Token"
+    visible: oac_is_deployed
+  analytics_instance_capacity_capacity_type:
+    type: enum
+    enum:
+      - OLPU_COUNT
+      - USER_COUNT
+    required: true
+    description: "The capacity model to use for service instance capacity metadata (e.g.: OLPU count, number of users, etc.)"
+    title: "OAC Capacity Type"
+    default: OLPU_COUNT
+    visible: oac_is_deployed
+  analytics_instance_capacity_capacity_value:
+    type: integer
+    required: true
+    description: "(Updatable) The capacity value selected (OLPU count, number of users, etc.). This parameter affects the number of CPUs, amount of memory or other resources allocated to the instance."
+    title: "OAC Capacity Value"
+    default: 2
+    minimum: 1
+    maximum: 128
+    visible: oac_is_deployed
+  analytics_instance_feature_set:
+    type: enum
+    enum:
+      - SELF_SERVICE_ANALYTICS
+      - ENTERPRISE_ANALYTICS
+    description: "The value to assign to the feature_set property of this AnalyticsInstance."
+    title: "OAC Feature Set"
+    default: ENTERPRISE_ANALYTICS
+    visible: oac_is_deployed
+  analytics_instance_license_type:
+    type: enum
+    enum:
+      - BRING_YOUR_OWN_LICENSE
+      - LICENSE_INCLUDED
+    required: true
+    description: "(Updatable) The Oracle license model that applies to the OAC instance."
+    title: "OAC License Model"
+    default: LICENSE_INCLUDED
+    visible: oac_is_deployed
+  analytics_instance_name:
+    type: string
+    required: true
+    description: "The name of the database within your OAC instance. The name must contain only letters and numbers, starting with a letter. Spaces are not allowed. The OAC instance name must be unique in the tenancy."
+    title: "OAC Name"
+    default: "OACAD"
+    pattern: "^[a-zA-Z][a-zA-Z0-9]*$"
+    visible: oac_is_deployed
+
+  object_storage_bucket_name:
+    type: string
+    required: true
+    description: "The prefix of the name to be assigned to the Bucket. Valid characters are uppercase or lowercase letters, numbers, hyphens, underscores, and periods. Bucket names must be unique within an Object Storage namespace."
+    title: "Bucket Name (Prefix)"
+    default: "PR_bucket"
+    visible: object_storage_is_deployed
+    pattern: "^[_\\-a-zA-Z0-9\\.]*$"
+  object_storage_bucket_access_type:
+    type: enum
+    enum:
+      - NoPublicAccess
+      - ObjectRead
+      - ObjectReadWithoutList
+    required: true
+    description: "(Updatable) The type of public access enabled on this object_storage_bucket. A object_storage_bucket is set to \"NoPublicAccess\" by default, which only allows an authenticated caller to access the object_storage_bucket and its contents. When \"ObjectRead\" is enabled on the object_storage_bucket, public access is allowed for the \"GetObject\", \"HeadObject\", and \"ListObjects\" operations. When \"ObjectReadWithoutList\" is enabled on the object_storage_bucket, public access is allowed for the \"GetObject\" and \"HeadObject\" operations."
+    title: "Bucket Access Type"
+    default: NoPublicAccess
+    visible: object_storage_is_deployed
+  object_storage_bucket_storage_tier:
+    type: enum
+    enum:
+      - Standard
+      - Archive
+    required: true
+    description: "The storage tier of the object_storage_bucket. The Standard storage tier is \"hot\" storage used for data that you need to access quickly, immediately, and frequently. The Archive storage tier is \"cold\" storage used for data seldom or rarely access, but that must be retained and preserved for long periods of time."
+    title: "Bucket Storage Tier"
+    default: Standard
+    visible: object_storage_is_deployed
+  object_storage_bucket_versioning:
+    type: enum
+    enum:
+      - Enabled
+      - Disabled
+    required: true
+    description: "(Updatable) Use this option to enable versioning during object_storage_bucket creation. Objects in a version enabled object_storage_bucket are protected from overwrites and deletions. Previous versions of the same object will be available in the object_storage_bucket."
+    title: "Bucket Versioning"
+    default: Disabled
+    visible: object_storage_is_deployed
+  ods_project_display_name:
+    type: string
+    required: true
+    description: "(Updatable) User-friendly name for your ODS Project instance."
+    title: "ODS Project Name"
+    default: "PR_data_science_project"
+    visible: ods_is_deployed
+  ods_notebook_session_display_name:
+    type: string
+    required: true
+    description: "(Updatable) User-friendly name for your ODS Notebook Session instance."
+    title: "ODS Notebook Session Name"
+    default: "PR_data_science_notebook_session"
+    visible: ods_is_deployed
+  ods_notebook_session_shape:
+    type: string
+    required: true
+    description: "(Updatable) The shape used to launch the notebook session compute instance. Review this page for details on allowed shapes: https://docs.oracle.com/en-us/iaas/data-science/using/manage-notebook-sessions.htm"
+    title: "ODS Notebook Session Shape"
+    default: "VM.Standard.E3.Flex"
+    visible: ods_is_deployed
+  ods_notebook_session_ocpu:
+    type: integer
+    required: true
+    description: "(Updatable) The number of OCPUs with which to provision the notebook session compute instance."
+    title: "ODS Notebook Session Core Count (# OCPUs)"
+    default: 2
+    minimum: 1
+    maximum: 64
+    visible:
+      and:
+        - ods_is_deployed
+        - and:
+          - or:
+            - eq:
+              - ods_notebook_session_shape
+              - "VM.Standard.E3.Flex"
+            - eq:
+              - ods_notebook_session_shape
+              - "VM.Standard.E4.Flex"
+  ods_notebook_session_memory_in_gb:
+    type: integer
+    required: true
+    description: "(Updatable) The amount of memory in GB with which to provision the notebook session compute instance."
+    title: "ODS Notebook Session Memory (GB)"
+    default: 32
+    minimum: 1
+    maximum: 1024
+    visible:
+      and:
+        - ods_is_deployed
+        - and:
+          - or:
+            - eq:
+              - ods_notebook_session_shape
+              - "VM.Standard.E3.Flex"
+            - eq:
+              - ods_notebook_session_shape
+              - "VM.Standard.E4.Flex"
+  ods_notebook_session_block_storage_size_in_gbs:
+    type: integer
+    required: true
+    description: "(Updatable) A notebook session instance is provided with a block storage volume. This specifies the size of the volume in GBs."
+    title: "ODS Notebook Session Storage Volume Size (GB)"
+    default: 100
+    minimum: 50
+    maximum: 32000
+    visible: ods_is_deployed
+
+  ons_topic_name:
+    type: string
+    required: true
+    description: "The prefix of the name of the topic being created. The topic name must be unique across the tenancy. Avoid entering confidential information."
+    title: "ONS Topic Name (Prefix)"
+    default: "PR_ons_topic"
+    visible: ons_is_deployed
+  ons_subscription_endpoint:
+    type: string
+    required: true
+    description: "A locator that corresponds to the subscription protocol. For example, an email address for a subscription that uses the EMAIL protocol, or a URL for a subscription that uses an HTTP-based protocol. HTTP-based protocols use URL endpoints that begin with \"http:\" or \"https:\". A URL cannot exceed 512 characters. Avoid entering confidential information. For protocol-specific endpoint formats and steps to get or create endpoints, see: https://docs.cloud.oracle.com/iaas/Content/Notification/Tasks/managingtopicsandsubscriptions.htm#createSub"
+    title: "ONS Subscription Endpoint"
+    visible: ons_is_deployed
+  ons_subscription_protocol:
+    type: enum
+    required: true
+    description: "The protocol used for the subscription."
+    enum:
+      - "CUSTOM_HTTPS"
+      - "EMAIL"
+      - "ORACLE_FUNCTIONS"
+      - "PAGERDUTY"
+      - "SLACK"
+      - "SMS"
+    title: "ONS Subscription Protocol"
+    default: "EMAIL"
+    visible: ons_is_deployed
+
+  vcn_display_name:
+    type: string
+    required: true
+    description: "(Updatable) User-friendly name for your Virtual Cloud Network (VCN)."
+    title: "VCN Display Name"
+    default: "PR_vcn"
+    visible: vcn_is_deployed
+  vcn_dns_label:
+    type: string
+    required: true
+    description: "A DNS label for the VCN, used in conjunction with the VNIC's hostname and subnet's DNS label to form a fully qualified domain name (FQDN) for each VNIC within this subnet (for example, bminstance-1.subnet123.vcn1.oraclevcn.com). Must be an alphanumeric string that begins with a letter. The value cannot be changed. The absence of this parameter means the Internet and VCN Resolver will not work for this VCN."
+    title: "VCN DNS Label"
+    default: "vcn"
+    maxLength: 15
+    visible: vcn_is_deployed
+  vcn_cidrs:
+    type: array
+    items:
+      pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+      type: string
+    required: true
+    description: "(Updatable) A list of CIDR ranges to use for this VCN"
+    title: "VCN CIDRs"
+    default: ["10.0.0.0/16"]
+    visible: vcn_is_deployed
+  ig_display_name:
+    type: string
+    required: true
+    description: "(Updatable) User-friendly name for your Internet Gateway."
+    title: "Internet Gateway Display Name"
+    default: "PR_internet_gateway"
+    visible: vcn_is_deployed
+  ng_display_name:
+    type: string
+    required: true
+    description: "(Updatable) User-friendly name for your Network Address Translation (NAT) Gateway."
+    title: "NAT Gateway Display Name"
+    default: "PR_nat_gateway"
+    visible: vcn_is_deployed
+  sg_display_name:
+    type: string
+    required: true
+    description: "(Updatable) User-friendly name for your Service Gateway."
+    title: "Service Gateway Display Name"
+    default: "PR_service_gateway"
+    visible: vcn_is_deployed

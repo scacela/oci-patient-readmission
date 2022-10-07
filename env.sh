@@ -1,0 +1,4 @@
+export TF_VAR_tenancy_ocid="ocid1.tenancy.oc1..aaaaaaaaiyavtwbz4kyu7g7b6wglllccbflmjx2lzk5nwpbme44mv54xu7dq"
+export TF_VAR_user_ocid="ocid1.user.oc1..aaaaaaaap5efrqdycz3bo4qblilhtvsiysf5fijembknhbgbz6mynm5azi6q"
+export TF_VAR_region="us-ashburn-1"
+export TF_VAR_parent_compartment_id="ocid1.compartment.oc1..aaaaaaaacutdz6tyvxv5ujhq62ag3bbryocnpyty6mndu2sseba3cynnpxlq"
