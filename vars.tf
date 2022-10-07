@@ -56,6 +56,7 @@ variable "autonomous_database_whitelisted_ips" {
 
 # oac
 variable "oac_is_deployed" { default = true }
+variable "analytics_instance_idcs_access_token" { default = "" }
 variable "analytics_instance_name" { default = "OACAD" } # The name of the database within your OAC instance. The name must contain only letters and numbers, starting with a letter. Spaces are not allowed. The OAC instance name must be unique in the tenancy.
 variable "analytics_instance_capacity_capacity_type" { default = "OLPU_COUNT" }
 variable "analytics_instance_capacity_capacity_value" { default = 2 }

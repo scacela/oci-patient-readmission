@@ -23,13 +23,13 @@ module "adw" {
   autonomous_database_db_version = var.autonomous_database_db_version
   autonomous_database_is_auto_scaling_enabled = var.autonomous_database_is_auto_scaling_enabled
   autonomous_database_data_storage_size_in_tbs = var.autonomous_database_data_storage_size_in_tbs
-  autonomous_database_display_name = local.autonomous_database_display_name
+  autonomous_database_display_name = var.autonomous_database_display_name
   autonomous_database_db_name = local.autonomous_database_db_name
   autonomous_database_db_workload = var.autonomous_database_db_workload
   autonomous_database_license_model = var.autonomous_database_license_model
   autonomous_database_data_safe_status = var.autonomous_database_data_safe_status
   autonomous_database_whitelisted_ips = var.autonomous_database_whitelisted_ips
-  compartment_id = local.compartment_id
+  compartment_id = var.compartment_id
 }
 
 # module "functions" {
@@ -66,8 +66,8 @@ module "oac" {
   analytics_instance_capacity_capacity_value = var.analytics_instance_capacity_capacity_value
   analytics_instance_feature_set = var.analytics_instance_feature_set
   analytics_instance_license_type = var.analytics_instance_license_type
-  compartment_id = local.compartment_id
   analytics_instance_idcs_access_token = var.analytics_instance_idcs_access_token
+  compartment_id = var.compartment_id
 }
 
 module "object_storage" {

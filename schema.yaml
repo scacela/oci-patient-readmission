@@ -56,12 +56,6 @@ variableGroups:
     - autonomous_database_license_model
     - autonomous_database_data_safe_status
     - autonomous_database_whitelisted_ips
-    - adw_group_is_deployed
-    - adw_group_name
-    - adw_group_description
-    - adw_policy_is_deployed
-    - adw_policy_name
-    - adw_policy_description
 
 - title: "Oracle Analytics Cloud (OAC)"
   variables:
@@ -71,12 +65,6 @@ variableGroups:
     - analytics_instance_feature_set
     - analytics_instance_license_type
     - analytics_instance_name
-    - oac_group_is_deployed
-    - oac_group_name
-    - oac_group_description
-    - oac_policy_is_deployed
-    - oac_policy_name
-    - oac_policy_description
 - title: "Object Storage Bucket"
   variables:
     - object_storage_bucket_name
@@ -370,6 +358,14 @@ variables:
     description: "IDCS access token identifying a stripe and service administrator user. Use an IDCS Application to generate a token file that contains the access token. Supply the access token from the token file by pasting VALUE from {\"app_access_token\":\"VALUE\"}"
     title: "OAC IDCS Access Token"
     visible: oac_is_deployed
+  analytics_instance_name:
+    type: string
+    required: true
+    description: "The name of the database within your OAC instance. The name must contain only letters and numbers, starting with a letter. Spaces are not allowed. The OAC instance name must be unique in the tenancy."
+    title: "OAC Name"
+    default: "OACAD"
+    pattern: "^[a-zA-Z][a-zA-Z0-9]*$"
+    visible: oac_is_deployed
   analytics_instance_capacity_capacity_type:
     type: enum
     enum:
@@ -407,14 +403,6 @@ variables:
     description: "(Updatable) The Oracle license model that applies to the OAC instance."
     title: "OAC License Model"
     default: LICENSE_INCLUDED
-    visible: oac_is_deployed
-  analytics_instance_name:
-    type: string
-    required: true
-    description: "The name of the database within your OAC instance. The name must contain only letters and numbers, starting with a letter. Spaces are not allowed. The OAC instance name must be unique in the tenancy."
-    title: "OAC Name"
-    default: "OACAD"
-    pattern: "^[a-zA-Z][a-zA-Z0-9]*$"
     visible: oac_is_deployed
 
   object_storage_bucket_name:
