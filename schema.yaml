@@ -174,7 +174,7 @@ variables:
     required: true
     description: "(Updatable) The description you assign to the compartment during creation. Does not have to be unique, and it's changeable."
     title: "Descripion for New Compartment"
-    default: "Compartment for Anomaly Detection workshop"
+    default: "Compartment for Patient Readmission workshop"
     visible: true
   iam_compartment_enable_delete:
     type: boolean
@@ -203,7 +203,7 @@ variables:
     required: true
     description: "(Updatable) The description you assign to the policy during creation. Does not have to be unique, and it's changeable."
     title: "IAM Policy Description"
-    default: "Policy for Anomaly Detection workshop"
+    default: "Policy for Patient Readmission workshop"
     visible: iam_policy_is_deployed
   iam_dynamic_group_name:
     type: string
@@ -218,7 +218,7 @@ variables:
     required: true
     description: "(Updatable) The description you assign to the dynamic group during creation. Does not have to be unique, and it's changeable."
     title: "IAM Dynamic Group Description"
-    default: "Dynamic Group for Anomaly Detection workshop"
+    default: "Dynamic Group for Patient Readmission workshop"
     visible: iam_policy_is_deployed
 
   # details: a tile for selection of resources
