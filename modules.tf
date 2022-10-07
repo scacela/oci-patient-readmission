@@ -29,7 +29,7 @@ module "adw" {
   autonomous_database_license_model = var.autonomous_database_license_model
   autonomous_database_data_safe_status = var.autonomous_database_data_safe_status
   autonomous_database_whitelisted_ips = var.autonomous_database_whitelisted_ips
-  compartment_id = var.compartment_id
+  compartment_id = local.compartment_id
 }
 
 # module "functions" {
@@ -67,7 +67,7 @@ module "oac" {
   analytics_instance_feature_set = var.analytics_instance_feature_set
   analytics_instance_license_type = var.analytics_instance_license_type
   analytics_instance_idcs_access_token = var.analytics_instance_idcs_access_token
-  compartment_id = var.compartment_id
+  compartment_id = local.compartment_id
 }
 
 module "object_storage" {
