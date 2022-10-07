@@ -88,7 +88,7 @@ For general Resource Manager deployment steps, you can refer to [this documentat
 In Chrome, Firefox and Safari, you can do this with `CTRL`+`Click` > Select `Open Link in New Tab`.
 \
 \
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=home&zipUrl=https://github.com/scacela/oci-digital-twin-pipeline/archive/refs/tags/v1.0.0.zip)
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=home&zipUrl=https://github.com/scacela/oci-patient-readmission/archive/refs/tags/v1.0.0.zip)
 2. Log into your Oracle Cloud Infrastructure (OCI) tenancy with your user credentials. You will then be redirected to the `Stack Information` section of Resource Manager.
 3. In the `Stack Information` section, select the checkbox to confirm that you accept the [Oracle Terms of Use](https://cloudmarketplace.oracle.com/marketplace/content?contentId=50511634&render=inline).
 4. In the `Create in compartment` field, select a compartment from the dropdown menu where you wish to deploy the resource that represents the stack as a unit.
@@ -113,7 +113,7 @@ In Chrome, Firefox and Safari, you can do this with `CTRL`+`Click` > Select `Ope
 - Sufficient availability of resources in your OCI Tenancy. You can check resource availability [here](https://cloud.oracle.com/limits?region=home).
 - Terraform set up on your local machine. You can access the steps [here](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/terraformgetstarted.htm).
 #### Steps
-1. [Download this project](https://github.com/scacela/oci-digital-twin-pipeline/archive/refs/tags/v1.0.0.zip) to your local machine.
+1. [Download this project](https://github.com/scacela/oci-patient-readmission/archive/refs/tags/v1.0.0.zip) to your local machine.
 2. [Set up CLI Terraform on your local machine.](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/terraformgetstarted.htm) 
 3. Navigate to project folder on your local machine via CLI.
 <pre>
